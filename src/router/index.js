@@ -3,28 +3,21 @@ import Router from 'vue-router'
 
 // in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
 // detail: https://panjiachen.github.io/vue-element-admin-site/#/lazy-loading
-
 Vue.use(Router)
 
 /* Layout */
 import Layout from '../views/layout/Layout'
 
-/**
-* hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
-* alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
-*                                if not set alwaysShow, only more than one route under the children
-*                                it will becomes nested mode, otherwise not show the root menu
-* redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
-* name:'router-name'             the name is used by <keep-alive> (must set!!!)
-* meta : {
-    title: 'title'               the name show in submenu and breadcrumb (recommend set)
-    icon: 'svg-name'             the icon show in the sidebar,
-  }
-**/
+const DashBoard_index = () => import('@/views/dashboard/index')
+
+// betblock 相关的东西
+const bb_withdraw = () => import('@/views/betblock/withdraw')
+
+const form_index = () => import('@/views/form/index')
+
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true },
   { path: '/404', component: () => import('@/views/404'), hidden: true },
-
   {
     path: '/',
     component: Layout,
@@ -33,32 +26,30 @@ export const constantRouterMap = [
     hidden: true,
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      component: DashBoard_index
     }]
   },
-
   {
-    path: '/example',
+    path: '/betblock',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    redirect: '/betblock/withdraw',
+    name: 'BetBlock',
+    meta: { title: 'BetBlock', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'withdraw',
+        name: 'withdraw',
+        component: bb_withdraw,
+        meta: { title: '提款审核', icon: 'withdraw' }
       },
       {
         path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        name: 'more',
+        component: bb_withdraw,
+        meta: { title: 'more', icon: 'tree' }
       }
     ]
   },
-
   {
     path: '/form',
     component: Layout,
@@ -66,12 +57,11 @@ export const constantRouterMap = [
       {
         path: 'index',
         name: 'Form',
-        component: () => import('@/views/form/index'),
+        component: form_index,
         meta: { title: 'Form', icon: 'form' }
       }
     ]
   },
-
   { path: '*', redirect: '/404', hidden: true }
 ]
 
@@ -81,3 +71,15 @@ export default new Router({
   routes: constantRouterMap
 })
 
+/**
+ * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
+ *                                if not set alwaysShow, only more than one route under the children
+ *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
+    title: 'title'               the name show in submenu and breadcrumb (recommend set)
+    icon: 'svg-name'             the icon show in the sidebar,
+  }
+ **/

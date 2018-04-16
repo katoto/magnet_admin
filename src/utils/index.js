@@ -56,3 +56,13 @@ export function formatTime(time, option) {
     return d.getMonth() + 1 + '月' + d.getDate() + '日' + d.getHours() + '时' + d.getMinutes() + '分'
   }
 }
+
+export function namespace(ns) {
+  return (name) => [ns, name].join('/')
+}
+
+export const platform = (function() {
+  return ~navigator.userAgent.indexOf('iPhone') ? 'ios' : 'android'
+})()
+
+export const src = 'pc'
