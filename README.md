@@ -4,6 +4,8 @@
 
 [线上地址](http://panjiachen.github.io/vueAdmin-template)
 
+clone 一下。
+
 ## Extra
 如果你想要根据用户角色来动态生成侧边栏和router，你可以使用改分支[permission-control](https://github.com/PanJiaChen/vueAdmin-template/tree/permission-control)
  
@@ -43,12 +45,17 @@ npm run build
 npm run build --report
 ```
 
-## Demo
-![demo](https://github.com/PanJiaChen/PanJiaChen.github.io/blob/master/images/demo.gif)
-
 ## License
 [MIT](https://github.com/PanJiaChen/vueAdmin-template/blob/master/LICENSE) license.
 
-Copyright (c) 2017-present PanJiaChen
+
+element-ui 饿了么出品的vue2.0 pc UI框架
+axios 一个现在主流并且很好用的请求库 支持Promise
+js-cookie 一个轻量的JavaScript库来处理cookie
+normalize.css 格式化css
+nprogress 轻量的全局进度条控制
+vuex 官方状态管理
+vue-router 官方路由
+
 
 
