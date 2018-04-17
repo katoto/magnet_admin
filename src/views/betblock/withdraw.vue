@@ -53,9 +53,14 @@
           </el-table-column>
           <el-table-column
             prop="address"
+            label="当前状态">
+          </el-table-column>
+          <el-table-column
+            prop="address"
             label="操作">
             <template slot-scope="scope">
-              <el-button @click="lineClick(scope.row)" type="text" size="small">{{ tableStateName }}</el-button>
+              <el-button @click="lineClick(scope.row)" type="text" size="small">允许</el-button>
+              <el-button @click="lineClick(scope.row)" type="danger" size="small">拒绝</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -66,6 +71,7 @@
 </template>
 
 <script>
+  import {mTypes, aTypes} from '@/store/modules/betblock'
   export default {
     data(){
       return {
@@ -73,7 +79,7 @@
         tableStateName: '允许',
         tableData: [{
           date: '2016-05-03',
-          name: '王小虎',
+          name: '王虎',
           province: '上海',
           city: '普陀区',
           address: '上海市普陀区金沙江路 1518 弄',
@@ -90,7 +96,7 @@
     },
     watch: {},
     methods: {
-      confirmFn( userName ){
+      confirmFn(userName){
         this.$confirm('拒绝该用户<<' + userName + '>>提款申请, 是否继续?', '注意', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -109,8 +115,8 @@
       },
       lineClick(row){
         console.log(row);
-        console.log(row.city);
-        this.confirmFn( row.city )
+        console.log(row.name);
+        this.confirmFn(row.name)
 
       },
       bannerClick() {
@@ -129,9 +135,15 @@
         }
       }
     },
-    computed: {},
+    computed: {
+      matchList_hot(){
+          return this.$store.state.betblock.matchList_hot
+      }
+    },
     mounted(){
-
+      console.log(this.matchList_hot);
+      console.log(this.matchList_hot);
+      this.$store.dispatch(aTypes.getWithDrawMsg)
     }
   }
 </script>

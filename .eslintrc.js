@@ -21,5 +21,7 @@ module.exports = {
       'after': false
     }],
     "no-var": 0,//禁用var，用let和const代替
+    "no-console":0,
+    "no-unused-vars":1
   }
 }
