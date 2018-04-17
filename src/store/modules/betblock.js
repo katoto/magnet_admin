@@ -4,13 +4,14 @@
 
 import ajax from '@/utils/ajax'
 import {src, platform, mapMutations, mapActions} from '@/utils/index'
+import {Message} from 'element-ui'
 
 const state = {
-  withdrawList:null
+  withdrawList: null
 };
 
 const mutationsInfo = mapMutations({
-  setWithDrawList( state ,data ){
+  setWithDrawList(state, data){
     state.withdrawList = data
   },
   setNationGetRed (state, data) {
@@ -24,11 +25,23 @@ const actionsInfo = mapActions({
     try {
       let InfoData = await ajax.get(`http://10.0.1.167:4444/home/info`)
       console.log(InfoData);
-      if( InfoData ){
-        commit(mTypes.setWithDrawList ,InfoData)
+      if (InfoData) {
+        commit(mTypes.setWithDrawList, InfoData)
+        Message({
+          message: 'withdraw success',
+          type: 'success',
+          duration: 3000
+        })
       }
-    }catch (e){
+
+    } catch (e) {
       console.error('home info')
+      Message({
+        message: e.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+
     }
   },
 
