@@ -73,77 +73,77 @@
 <script>
   import {mTypes, aTypes} from '@/store/modules/betblock'
   export default {
-    data(){
-      return {
-        activeName: 'tkTable',
-        tableStateName: '允许',
-        tableData: [{
-          date: '2016-05-03',
-          name: '王虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市普陀区金沙江路 1518 弄',
-          zip: 200333
-        }]
-      }
-    },
-    watch: {},
-    methods: {
-      confirmFn(userName){
-        this.$confirm('拒绝该用户<<' + userName + '>>提款申请, 是否继续?', '注意', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '已成功拒绝!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });
-        });
-      },
-      lineClick(row){
-        console.log(row);
-        console.log(row.name);
-        this.confirmFn(row.name)
-
-      },
-      bannerClick() {
-        if (this.activeName) {
-          switch (this.activeName) {
-            case 'jcMsg':
-              this.activeName = 'jcMsg'
-              break;
-            case 'gjMsg':
-              this.activeName = 'gjMsg'
-              break;
-            case 'tkTable':
-              this.activeName = 'tkTable'
-              break
+      data(){
+          return {
+              activeName: 'tkTable',
+              tableStateName: '允许',
+              tableData: [{
+                  date: '2016-05-03',
+                  name: '王虎',
+                  province: '上海',
+                  city: '普陀区',
+                  address: '上海市普陀区金沙江路 1518 弄',
+                  zip: 200333
+              }, {
+                  date: '2016-05-02',
+                  name: '王小虎',
+                  province: '上海',
+                  city: '普陀区',
+                  address: '上海市普陀区金沙江路 1518 弄',
+                  zip: 200333
+              }]
           }
-        }
+      },
+      watch: {},
+      methods: {
+          confirmFn(userName){
+              this.$confirm('拒绝该用户<<' + userName + '>>提款申请, 是否继续?', '注意', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+              }).then(() => {
+                  this.$message({
+                      type: 'success',
+                      message: '已成功拒绝!'
+                  });
+              }).catch(() => {
+                  this.$message({
+                      type: 'info',
+                      message: '已取消'
+                  });
+              });
+          },
+          lineClick(row){
+              console.log(row);
+              console.log(row.name);
+              this.confirmFn(row.name)
+
+          },
+          bannerClick() {
+              if (this.activeName) {
+                  switch (this.activeName) {
+                  case 'jcMsg':
+                      this.activeName = 'jcMsg'
+                      break;
+                  case 'gjMsg':
+                      this.activeName = 'gjMsg'
+                      break;
+                  case 'tkTable':
+                      this.activeName = 'tkTable'
+                      break
+                  }
+              }
+          }
+      },
+      computed: {
+          matchList_hot(){
+              return this.$store.state.betblock.matchList_hot
+          }
+      },
+      mounted(){
+          console.log(this.matchList_hot);
+          console.log(this.matchList_hot);
+          this.$store.dispatch(aTypes.getWithDrawMsg)
       }
-    },
-    computed: {
-      matchList_hot(){
-          return this.$store.state.betblock.matchList_hot
-      }
-    },
-    mounted(){
-      console.log(this.matchList_hot);
-      console.log(this.matchList_hot);
-      this.$store.dispatch(aTypes.getWithDrawMsg)
-    }
   }
 </script>

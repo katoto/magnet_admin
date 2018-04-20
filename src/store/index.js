@@ -8,12 +8,12 @@ import betblock from './modules/betblock'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-  modules: {
-    app,
-    user,
-    betblock
-  },
-  getters
+    modules: {
+        app,
+        user,
+        betblock
+    },
+    getters
 })
 
 export default store

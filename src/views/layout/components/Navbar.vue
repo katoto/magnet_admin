@@ -4,7 +4,7 @@
     <breadcrumb></breadcrumb>
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
-        <img class="user-avatar" :src="avatar+'?imageView2/1/w/80/h/80'">
+        <img class="user-avatar" :src="userImg">
         <i class="el-icon-caret-bottom"></i>
       </div>
       <el-dropdown-menu class="user-dropdown" slot="dropdown">
@@ -26,27 +26,33 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
+import userImg from '@/assets/dashboard_img/userImg.jpg'
 export default {
-  components: {
-    Breadcrumb,
-    Hamburger
-  },
-  computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar'
-    ])
-  },
-  methods: {
-    toggleSideBar() {
-      this.$store.dispatch('ToggleSideBar')
+    data(){
+        return{
+          userImg
+        }
     },
-    logout() {
-      this.$store.dispatch('LogOut').then(() => {
-        location.reload() // 为了重新实例化vue-router对象 避免bug
-      })
+    components: {
+        Breadcrumb,
+        Hamburger
+    },
+    computed: {
+        ...mapGetters([
+            'sidebar',
+            'avatar'
+        ])
+    },
+    methods: {
+        toggleSideBar() {
+            this.$store.dispatch('ToggleSideBar')
+        },
+        logout() {
+            this.$store.dispatch('LogOut').then(() => {
+                location.reload() // 为了重新实例化vue-router对象 避免bug
+            })
+        }
     }
-  }
 }
 </script>
 

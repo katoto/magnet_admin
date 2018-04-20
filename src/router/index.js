@@ -16,59 +16,59 @@ const bb_withdraw = () => import('@/views/betblock/withdraw')
 const form_index = () => import('@/views/form/index')
 
 export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
-  { path: '/404', component: () => import('@/views/404'), hidden: true },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    name: 'Dashboard',
-    hidden: true,
-    children: [{
-      path: 'dashboard',
-      component: DashBoard_index
-    }]
-  },
-  {
-    path: '/betblock',
-    component: Layout,
-    redirect: '/betblock/withdraw',
-    name: 'BetBlock',
-    meta: { title: 'BetBlock', icon: 'example' },
-    children: [
-      {
-        path: 'withdraw',
-        name: 'withdraw',
-        component: bb_withdraw,
-        meta: { title: '提款审核', icon: 'withdraw' }
-      },
-      {
-        path: 'tree',
-        name: 'more',
-        component: bb_withdraw,
-        meta: { title: 'more', icon: 'tree' }
-      }
-    ]
-  },
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: form_index,
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-  { path: '*', redirect: '/404', hidden: true }
+    { path: '/login', component: () => import('@/views/login/index'), hidden: true },
+    { path: '/404', component: () => import('@/views/404'), hidden: true },
+    {
+        path: '/',
+        component: Layout,
+        redirect: '/dashboard',
+        name: 'Dashboard',
+        hidden: true,
+        children: [{
+            path: 'dashboard',
+            component: DashBoard_index
+        }]
+    },
+    {
+        path: '/betblock',
+        component: Layout,
+        redirect: '/betblock/withdraw',
+        name: 'BetBlock',
+        meta: { title: 'BetBlock', icon: 'example' },
+        children: [
+            {
+                path: 'withdraw',
+                name: 'withdraw',
+                component: bb_withdraw,
+                meta: { title: '提款审核', icon: 'withdraw' }
+            },
+            {
+                path: 'tree',
+                name: 'more',
+                component: bb_withdraw,
+                meta: { title: 'more', icon: 'tree' }
+            }
+        ]
+    },
+    {
+        path: '/form',
+        component: Layout,
+        children: [
+            {
+                path: 'index',
+                name: 'Form',
+                component: form_index,
+                meta: { title: 'Form', icon: 'form' }
+            }
+        ]
+    },
+    { path: '*', redirect: '/404', hidden: true }
 ]
 
 export default new Router({
-  // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRouterMap
+    // mode: 'history', //后端支持可开
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRouterMap
 })
 
 /**
