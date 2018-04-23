@@ -23,19 +23,18 @@ const mutationsInfo = mapMutations({
 const actionsInfo = mapActions({
     async getWithDrawMsg({commit, dispatch}){
         try {
-            let InfoData = await ajax.get(`http://10.0.1.167:4444/home/info`)
+            let InfoData = await ajax.get(`http://10.0.1.167:4444/account/withdraw/approvelist`)
             console.log(InfoData);
             if (InfoData) {
                 commit(mTypes.setWithDrawList, InfoData)
                 Message({
-                    message: 'withdraw success',
+                    message: '提款列表更新成功',
                     type: 'success',
                     duration: 3000
                 })
             }
 
         } catch (e) {
-            console.error('home info')
             Message({
                 message: e.message,
                 type: 'error',
@@ -45,6 +44,32 @@ const actionsInfo = mapActions({
         }
     },
 
+  async setWithDraw({commit, dispatch}, val , isAgree ){
+    try {
+      console.log('||||')
+      console.log( val )
+      console.log( isAgree )
+      console.log('||||')
+      let InfoData = await ajax.get(`http://10.0.1.167:4444/account/withdraw/approve`)
+      console.log(InfoData);
+      if (InfoData) {
+        commit(mTypes.setWithDrawList, InfoData)
+        Message({
+          message: '提款列表更新成功',
+          type: 'success',
+          duration: 3000
+        })
+      }
+
+    } catch (e) {
+      Message({
+        message: e.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+
+    }
+  },
 }, 'betblock')
 
 
