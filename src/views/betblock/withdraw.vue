@@ -63,8 +63,13 @@
             prop="address"
             label="操作">
             <template slot-scope="scope">
-              <el-button @click="lineClick(scope.row)" :disabled="scope.row.drawstatus !== 0"  type="text" size="small">允许提款</el-button>
-              <el-button @click="lineClick(scope.row)" :disabled="scope.row.drawstatus !== 0" type="danger" size="small">拒绝提款</el-button>
+              <el-button @click="lineClick( scope.row,'1' )" :disabled="scope.row.drawstatus !== 0" type="text"
+                         size="small">
+                允许提款
+              </el-button>
+              <el-button @click="lineClick(scope.row , '2')" :disabled="scope.row.drawstatus !== 0" type="danger"
+                         size="small">拒绝提款
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -72,9 +77,21 @@
     </section>
 
     <!-- 提款申请 -->
-
     <!-- 提款审核的操作弹窗 -->
-
+    <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
+    <el-dialog title="注意！" :visible.sync="dialogTableVisible">
+      <section>
+        {{ js_withdrawMsg }}
+      </section>
+      <div>
+        <span>请输入审核备注:</span>
+        <el-input placeholder="请输入审核备注" v-model='withdraw_remark'></el-input>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="surePay">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -83,9 +100,14 @@
   export default {
     data(){
       return {
+        withdraw_remark: null,
+        dialogTableVisible: false,
         activeName: 'tkTable',
         tableStateName: '允许',
-        tableData: []
+        tableData: [],
+        js_withdrawMsg: null,
+        currLineData: null,
+        currType : null
       }
     },
     watch: {
@@ -93,15 +115,15 @@
         if (data && data.list) {
           data.list.forEach((val, index) => {
             if (val.drawtime) {
-              val.drawtime = this.format( val.drawtime )
+              val.drawtime = this.format(val.drawtime)
             }
             if (val.to_addr) {
-              val.to_addr_go = 'https://etherscan.io/address/'+ val.to_addr
+              val.to_addr_go = 'https://etherscan.io/address/' + val.to_addr
             }
             if (val.to_addr) {
-              val.to_addr_go = 'https://etherscan.io/address/'+ val.to_addr
+              val.to_addr_go = 'https://etherscan.io/address/' + val.to_addr
             }
-            if( val.drawstatus !== undefined ){
+            if (val.drawstatus !== undefined) {
               switch (val.drawstatus) {
                 case 0:
                   val.drawstatusVal = '待审核'
@@ -129,32 +151,61 @@
       }
     },
     methods: {
-      confirmFn( lineData ){
-        this.$confirm('拒绝该用户<<' + lineData.uid + '>>提款申请, 是否继续?', '注意', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputPattern:'',
-          inputErrorMessage:'请输入备注'
-        }).then( async () => {
-          let backData = await this.$store.dispatch(aTypes.setWithDraw, lineData , '1' );
-          console.log(backData);
-          console.log(backData);
+      async surePay(){
+          let surePayBack = null;
+          Object.assign(this.currLineData , {
+            withdraw_remark:this.withdraw_remark,
+            isAgree : this.currType
+          })
 
-          this.$message({
-            type: 'success',
-            message: '已成功拒绝!'
-          });
+        if( this.currType === '2'){
+            surePayBack = await this.$store.dispatch(aTypes.setWithDraw, this.currLineData );
+          }else{
+            surePayBack = await this.$store.dispatch(aTypes.setWithDraw, this.currLineData );
+          }
+        console.log(surePayBack);
+        console.log(surePayBack);
+        console.log(surePayBack);
+      },
+      confirmFn(lineData, type){
 
-        }).catch(() => {
-          this.$store.dispatch(aTypes.setWithDraw, lineData , '0' )
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });
-        });
+        if (type === '2') {
+          this.js_withdrawMsg = '拒绝用户《' + lineData.uid + '》提款？'
+
+        } else {
+          this.js_withdrawMsg = '允许用户《' + lineData.uid + '》提款？'
+        }
+        this.dialogTableVisible = true;
+        this.currLineData = lineData;
+        this.currType = type ;
+
+//        this.$confirm('拒绝该用户<<' + lineData.uid + '>>提款申请, 是否继续?', '注意', {
+//          confirmButtonText: '确定',
+//          cancelButtonText: '取消',
+//          inputPattern:'',
+//          inputErrorMessage:'请输入备注'
+//        }).then( async () => {
+//          let backData = await this.$store.dispatch(aTypes.setWithDraw, lineData , '1' );
+//          console.log(backData);
+//          console.log(backData);
+//
+//          this.$message({
+//            type: 'success',
+//            message: '已成功拒绝!'
+//          });
+//
+//        }).catch(() => {
+//          this.$store.dispatch(aTypes.setWithDraw, lineData , '0' )
+//          this.$message({
+//            type: 'info',
+//            message: '已取消'
+//          });
+//        });
+
+
       },
       format (time, format = 'yyyy-MM-dd') {
-          time = +time * 1000;
+        time = +time * 1000;
         let t = new Date(time);
         let tf = function (i) {
           return (i < 10 ? '0' : '') + i
@@ -176,8 +227,8 @@
           }
         })
       },
-      lineClick(row){
-        this.confirmFn(row)
+      lineClick(row, type){
+        this.confirmFn(row, type)
 
       },
       bannerClick() {

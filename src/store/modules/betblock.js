@@ -6,6 +6,8 @@ import ajax from '@/utils/ajax'
 import {src, platform, mapMutations, mapActions} from '@/utils/index'
 import {Message} from 'element-ui'
 
+import { getCK,setCK,removeCK } from '@/utils/auth'
+
 const state = {
     withdrawList: null
 };
@@ -44,13 +46,13 @@ const actionsInfo = mapActions({
         }
     },
 
-  async setWithDraw({commit, dispatch}, val , isAgree ){
+  async setWithDraw({commit, dispatch}, val ){
     try {
       console.log('||||')
+      console.log( val.isAgree )
       console.log( val )
-      console.log( isAgree )
       console.log('||||')
-      let InfoData = await ajax.get(`http://10.0.1.167:4444/account/withdraw/approve`)
+      let InfoData = await ajax.get(`http://10.0.1.167:4444/account/withdraw/approve?ck=${getCK()}&drawid=${val.drawid}&result=${val.isAgree}&remark=${val.remark}`)
       console.log(InfoData);
       if (InfoData) {
         commit(mTypes.setWithDrawList, InfoData)
