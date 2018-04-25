@@ -42,7 +42,8 @@
           </el-table-column>
           <el-table-column
             prop="drawtime"
-            label="提款时间">
+            label="提款时间"
+            width="110">
           </el-table-column>
           <el-table-column
             width="200"
@@ -53,32 +54,54 @@
           </el-table-column>
           <el-table-column
             prop="balance"
-            label="账户余额">
+            label="账户余额"
+          >
           </el-table-column>
           <el-table-column
             prop="drawstatusVal"
-            label="提款状态">
+            label="提款状态"
+            width="120">
           </el-table-column>
           <el-table-column
             prop="address"
             label="操作">
             <template slot-scope="scope">
-              <el-button @click="lineClick( scope.row,'1' )" :disabled="scope.row.drawstatus !== 0" type="text"
-                         size="small">
-                允许提款
-              </el-button>
-              <el-button @click="lineClick(scope.row , '2')" :disabled="scope.row.drawstatus !== 0" type="danger"
-                         size="small">拒绝提款
-              </el-button>
+              <section v-if="scope.row.drawstatus === 0">
+                <el-button @click="lineClick( scope.row,'1' )" :disabled="scope.row.drawstatus !== 0" type="text"
+                           size="small">
+                  允许提款
+                </el-button>
+                <el-button @click="lineClick(scope.row , '2')" :disabled="scope.row.drawstatus !== 0" type="danger"
+                           size="small">拒绝提款
+                </el-button>
+              </section>
+              <section v-else>
+                <el-button type="success" size="small" disabled>已操作
+                </el-button>
+              </section>
             </template>
           </el-table-column>
         </el-table>
+
+        <div class="block">
+          <el-pagination
+            @current-change="handleCurrentChange"
+            background
+            :current-page.sync="pageNumber"
+            size="small"
+            :page-size="pageSize"
+            layout="prev, pager, next,jumper"
+            :total="totalCount">
+          </el-pagination>
+        </div>
+
       </div>
+
+
     </section>
 
     <!-- 提款申请 -->
     <!-- 提款审核的操作弹窗 -->
-    <el-button type="text" @click="dialogTableVisible = true">打开嵌套表格的 Dialog</el-button>
     <el-dialog title="注意！" :visible.sync="dialogTableVisible">
       <section>
         {{ js_withdrawMsg }}
@@ -100,14 +123,19 @@
   export default {
     data(){
       return {
-        withdraw_remark: null,
+
+        totalCount: 10,
+        pageNumber: 1,
+        pageSize: 6,
+
+        withdraw_remark: '',
         dialogTableVisible: false,
         activeName: 'tkTable',
         tableStateName: '允许',
         tableData: [],
         js_withdrawMsg: null,
         currLineData: null,
-        currType : null
+        currType: null
       }
     },
     watch: {
@@ -152,20 +180,24 @@
     },
     methods: {
       async surePay(){
-          let surePayBack = null;
-          Object.assign(this.currLineData , {
-            withdraw_remark:this.withdraw_remark,
-            isAgree : this.currType
-          })
+        let surePayBack = null;
+        Object.assign(this.currLineData, {
+          remark: this.withdraw_remark,
+          isAgree: this.currType
+        })
 
-        if( this.currType === '2'){
-            surePayBack = await this.$store.dispatch(aTypes.setWithDraw, this.currLineData );
-          }else{
-            surePayBack = await this.$store.dispatch(aTypes.setWithDraw, this.currLineData );
-          }
-        console.log(surePayBack);
-        console.log(surePayBack);
-        console.log(surePayBack);
+        if (this.currType === '2') {
+          surePayBack = await this.$store.dispatch(aTypes.setWithDraw, this.currLineData);
+        } else {
+          surePayBack = await this.$store.dispatch(aTypes.setWithDraw, this.currLineData);
+        }
+
+        if (surePayBack && 1) {
+          this.dialogTableVisible = false;
+          this.$store.dispatch(aTypes.getWithDrawMsg)
+
+        }
+
       },
       confirmFn(lineData, type){
 
@@ -177,31 +209,7 @@
         }
         this.dialogTableVisible = true;
         this.currLineData = lineData;
-        this.currType = type ;
-
-//        this.$confirm('拒绝该用户<<' + lineData.uid + '>>提款申请, 是否继续?', '注意', {
-//          confirmButtonText: '确定',
-//          cancelButtonText: '取消',
-//          inputPattern:'',
-//          inputErrorMessage:'请输入备注'
-//        }).then( async () => {
-//          let backData = await this.$store.dispatch(aTypes.setWithDraw, lineData , '1' );
-//          console.log(backData);
-//          console.log(backData);
-//
-//          this.$message({
-//            type: 'success',
-//            message: '已成功拒绝!'
-//          });
-//
-//        }).catch(() => {
-//          this.$store.dispatch(aTypes.setWithDraw, lineData , '0' )
-//          this.$message({
-//            type: 'info',
-//            message: '已取消'
-//          });
-//        });
-
+        this.currType = type;
 
       },
       format (time, format = 'yyyy-MM-dd') {
@@ -228,6 +236,7 @@
         })
       },
       lineClick(row, type){
+        this.withdraw_remark = '';
         this.confirmFn(row, type)
 
       },
@@ -245,16 +254,38 @@
               break
           }
         }
-      }
+      },
+      async handleCurrentChange (val) {
+
+        let withDrawMsg = await this.$store.dispatch(aTypes.getWithDrawMsg, {
+          'pageNumber': Number(val),
+          'pageSize': this.pageSize
+        })
+        if (withDrawMsg) {
+          if (withDrawMsg.list) {
+            this.tableData = withDrawMsg.list
+            // 处理页码
+            this.totalCount = withDrawMsg.counter;
+            this.pageNumber = withDrawMsg.pageno;
+            this.pageSize = withDrawMsg.rangeno;
+          }
+        }
+      },
     },
     computed: {
       withdrawList(){
         return this.$store.state.betblock.withdrawList
       }
     },
-    mounted(){
-      console.log(this.matchList_hot);
-      this.$store.dispatch(aTypes.getWithDrawMsg)
+    async mounted(){
+      let withDrawMsg = await  this.$store.dispatch(aTypes.getWithDrawMsg, {'pageNumber': 1, 'pageSize': this.pageSize})
+
+      if (withDrawMsg) {
+        this.totalCount = withDrawMsg.counter;
+        this.pageNumber = withDrawMsg.pageno;
+        this.pageSize = withDrawMsg.rangeno;
+      }
+
     },
     filters: {
       format (time, format = 'yyyy-MM-dd') {
@@ -282,3 +313,9 @@
     }
   }
 </script>
+<style>
+  .el-pagination {
+    text-align: center;
+    margin-top: 10px;
+  }
+</style>
